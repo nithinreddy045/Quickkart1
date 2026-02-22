@@ -146,7 +146,7 @@
 
       <div class="text-center login-link">
         Already have an account? 
-        <a href="login.html" class="fw-bold text-warning text-decoration-none">Login</a>
+        <a href="index.html" class="fw-bold text-warning text-decoration-none">Login</a>
       </div>
 
     </form>
@@ -167,7 +167,8 @@ document.getElementById("signupForm").addEventListener("submit", function(e) {
         return;
     }
 
-    fetch("http://localhost:8080/api/signup", {
+    // 🔥 FIXED: Removed localhost
+    fetch("/api/signup", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -182,11 +183,16 @@ document.getElementById("signupForm").addEventListener("submit", function(e) {
     .then(response => response.text())
     .then(data => {
         alert(data);
+
         if(data === "Signup successful!") {
-            window.location.href = "login.html";
+            // 🔥 FIXED: login.html → index.html
+            window.location.href = "index.html";
         }
     })
-    .catch(error => console.error("Error:", error));
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Server error. Please try again.");
+    });
 });
 </script>
 
