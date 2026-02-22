@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flight Tickets</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #f4f9fd;
+    }
+
+    h2 {
+      font-weight: bold;
+    }
+
+    .ticket {
+      border: 2px dashed #0d6efd;
+      border-radius: 12px;
+      padding: 25px;
+      background: #e7f1ff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .ticket h5 {
+      font-weight: bold;
+      color: #0d6efd;
+      margin-bottom: 20px;
+    }
+
+    .form-label i {
+      margin-right: 6px;
+      color: #0d6efd;
+    }
+
+    .btn-group-custom {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .ticket p {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-5">
+    <h2 class="mb-4 text-center text-success">✈️ Book Your Flight Ticket</h2>
+    <form id="flightForm" class="bg-white p-4 rounded shadow-sm">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="from" class="form-label"><i class="bi bi-geo-alt"></i>From</label>
+          <input type="text" id="from" class="form-control" placeholder="Departure city" required />
+        </div>
+        <div class="col-md-6">
+          <label for="to" class="form-label"><i class="bi bi-geo-alt-fill"></i>To</label>
+          <input type="text" id="to" class="form-control" placeholder="Destination city" required />
+        </div>
+        <div class="col-md-6">
+          <label for="departureDate" class="form-label"><i class="bi bi-calendar-event"></i>Departure Date</label>
+          <input type="date" id="departureDate" class="form-control" required />
+        </div>
+        <div class="col-md-6">
+          <label for="returnDate" class="form-label"><i class="bi bi-calendar2-week"></i>Return Date (Optional)</label>
+          <input type="date" id="returnDate" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="passengerName" class="form-label"><i class="bi bi-person"></i>Passenger Name</label>
+          <input type="text" id="passengerName" class="form-control" placeholder="Full Name" required />
+        </div>
+        <div class="col-md-3">
+          <label for="passengerAge" class="form-label"><i class="bi bi-person-bounding-box"></i>Age</label>
+          <input type="number" id="passengerAge" class="form-control" min="0" placeholder="Age" required />
+        </div>
+        <div class="col-md-3">
+          <label for="classSelect" class="form-label"><i class="bi bi-award"></i>Class</label>
+          <select id="classSelect" class="form-select" required>
+            <option value="">Select Class</option>
+            <option value="Economy">Economy</option>
+            <option value="Business">Business</option>
+            <option value="First">First Class</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-group-custom">
+        <button type="submit" class="btn btn-success">🎟️ Generate Ticket</button>
+        <a href="index.html" class="btn btn-outline-success">← Return to Shopping</a>
+      </div>
+    </form>
+
+    <div id="ticketPreview" class="ticket mt-5" style="display:none;">
+      <h5 class="text-center">🎫 Flight Ticket</h5>
+      <p><strong>👤 Passenger:</strong> <span id="previewName"></span></p>
+      <p><strong>📍 Route:</strong> <span id="previewFrom"></span> → <span id="previewTo"></span></p>
+      <p><strong>🛫 Departure Date:</strong> <span id="previewDeparture"></span></p>
+      <p><strong>🛬 Return Date:</strong> <span id="previewReturn"></span></p>
+      <p><strong>🎂 Age:</strong> <span id="previewAge"></span></p>
+      <p><strong>🏷️ Class:</strong> <span id="previewClass"></span></p>
+      <p class="text-center mt-4"><em>Have a safe and pleasant journey! 🌍</em></p>
+    </div>
+  </div>
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <script>
+    const flightForm = document.getElementById('flightForm');
+    const ticketPreview = document.getElementById('ticketPreview');
+    const departureDateInput = document.getElementById('departureDate');
+    const returnDateInput = document.getElementById('returnDate');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      departureDateInput.setAttribute('min', today);
+    });
+
+    flightForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('passengerName').value.trim();
+      const from = document.getElementById('from').value.trim();
+      const to = document.getElementById('to').value.trim();
+      const departure = departureDateInput.value;
+      const returnDate = returnDateInput.value;
+      const age = document.getElementById('passengerAge').value;
+      const travelClass = document.getElementById('classSelect').value;
+
+      if (!name || !from || !to || !departure || !age || !travelClass) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+      const depDate = new Date(departure);
+      if (depDate < todayDate) {
+        alert('Departure date cannot be before today.');
+        return;
+      }
+
+      if (returnDate) {
+        const retDate = new Date(returnDate);
+        if (retDate < depDate) {
+          alert('Return date cannot be before the departure date.');
+          return;
+        }
+      }
+
+      document.getElementById('previewName').textContent = name;
+      document.getElementById('previewFrom').textContent = from;
+      document.getElementById('previewTo').textContent = to;
+      document.getElementById('previewDeparture').textContent = depDate.toLocaleDateString();
+      document.getElementById('previewReturn').textContent = returnDate ? new Date(returnDate).toLocaleDateString() : 'N/A';
+      document.getElementById('previewAge').textContent = age;
+      document.getElementById('previewClass').textContent = travelClass;
+
+      ticketPreview.style.display = 'block';
+      ticketPreview.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>

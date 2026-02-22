@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Account - QuickKart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #fff9e6, #ffe066);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .signup-box {
+      width: 900px;
+      max-width: 95%;
+      display: flex;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      background: white;
+    }
+
+    .left-panel {
+      background: linear-gradient(180deg, #ffcc00, #ffb300);
+      padding: 50px 40px;
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #333;
+    }
+
+    .left-panel h2 {
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .left-panel p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .right-panel {
+      padding: 50px 40px;
+      width: 60%;
+    }
+
+    .form-control {
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+
+    .form-control:focus {
+      box-shadow: 0 0 8px rgba(255, 179, 0, 0.5);
+      border-color: #ffb300;
+    }
+
+    .btn-signup {
+      background-color: #ffb300;
+      color: white;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    .btn-signup:hover {
+      background-color: #e6a800;
+    }
+
+    .login-link {
+      font-size: 14px;
+      margin-top: 20px;
+    }
+
+    @media(max-width: 768px){
+      .signup-box {
+        flex-direction: column;
+      }
+      .left-panel, .right-panel {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="signup-box">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <h2>Join QuickKart</h2>
+    <p>
+      Create your account and start shopping smarter with exclusive deals and personalized recommendations.
+    </p>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <h4 class="mb-4 fw-bold">Create Account</h4>
+
+    <form id="signupForm">
+
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Mobile Number</label>
+        <input type="tel" id="mobile" class="form-control" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email Address</label>
+        <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Create password" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm password" required>
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-signup">
+          Create Account
+        </button>
+      </div>
+
+      <div class="text-center login-link">
+        Already have an account? 
+        <a href="login.html" class="fw-bold text-warning text-decoration-none">Login</a>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<script>
+document.getElementById("signupForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+
+    if(password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+    }
+
+    fetch("http://localhost:8080/api/signup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: document.getElementById("name").value,
+            mobile: document.getElementById("mobile").value,
+            email: document.getElementById("email").value,
+            password: password
+        })
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert(data);
+        if(data === "Signup successful!") {
+            window.location.href = "login.html";
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+</script>
+
+</body>
+</html>
